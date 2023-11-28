@@ -1,47 +1,44 @@
-import openpyxl
 import tkinter as tk
 from tkinter import filedialog
+import openpyxl
+import warnings
+warnings.simplefilter("ignore", UserWarning)
 
-def create_dynamic_class(num_variables):
-    class_name = f'DynamicClassWith{num_variables}Strings'
-    dynamic_class = type(class_name, (object,), {f'var{i}': '' for i in range(1, num_variables + 1)})
 
-    return dynamic_class
 
-# Create a tkinter root window (it won't be displayed)
-root = tk.Tk()
-root.withdraw()
 
-# Open a file dialog to select an Excel file
-file_path = filedialog.askopenfilename(title="Select an Excel file", filetypes=[("Excel Files", "*.xlsx")])
-
-if file_path:
+def read_excel_file(file_path):
     try:
-        # Load the Excel file
         workbook = openpyxl.load_workbook(file_path)
 
-        # Select the desired worksheet (you can change the sheet name)
-        sheet = workbook.active  # or specify the sheet name like sheet = workbook['Sheet1']
+        # Print the names of all sheets in the workbook
+        sheet_names = workbook.sheetnames
+        print("Sheet Names:", sheet_names)
 
-        # Create a list to store the data
-        data = []
+        # Assuming you want to print the values in each cell of the first sheet
+        sheet = workbook.active
 
-        # Iterate through the rows and columns to read cell values
-        for row in sheet.iter_rows(values_only=True):
-            row_data = []
-            for cell_value in row:
-                row_data.append(cell_value)
-            data.append(row_data)
+        if sheet is not None:
+            for row in sheet.iter_rows(values_only=True):
+                print(row)
+        else:
+            print("No active sheet found in the workbook.")
 
-        # Print the data or do whatever you want with it
-        for row in data:
-            print(row)
-        # Close the Excel file
         workbook.close()
 
     except Exception as e:
         print(f"An error occurred: {e}")
 
+def open_excel_file():
+    root = tk.Tk()
+    root.withdraw()
 
-else:
-    print("No file selected.")
+    file_path = filedialog.askopenfilename(filetypes=[("Excel Files", "*.xlsx")])
+
+    if file_path:
+        read_excel_file(file_path)
+    else:
+        print("No file selected.")
+
+if __name__ == "__main__":
+    open_excel_file()

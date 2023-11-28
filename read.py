@@ -37,7 +37,7 @@ class parameter_class:
         self.notlar = notlar
 
 
-class main_table_class():
+class table_class:
     def __init__(self, name):
         self.name = name
         self.inside_table = []
@@ -55,43 +55,82 @@ table_names =[]
 tables = []
 def read_excel_file(file_path):
     try:
-        # Opening Excel file
+
         workbook = openpyxl.load_workbook(file_path, data_only=True)
 
-        excel_data = {}  # Dict to store sheets
+        excel_data = {}
+        print(workbook.sheetnames)
+        print(dot_check("st.ring."))
 
         for sheet_name in workbook.sheetnames:
             sheet = workbook[sheet_name]
 
-            #print("max row " + sheet.max_row)
-            #print("max column " + sheet.max_column)
-
-            # Get the column names from the first row
-            columns = [cell.value for cell in sheet[1]]
-
-            # Create a list to store the data from the current sheet
             sheet_data = []
-            module = []
-
             for row in sheet.iter_rows(min_row=2, max_row=sheet.max_row, min_col=1, max_col=sheet.max_column, values_only=True):
-
                 i = 0
                 for cell in row:
-                    if row[0] is None and i == 0:
-                        v=0
+                    if i == 0 or i == 1 or i == 2:   #for module and table columns
+                        if i == 0:
 
-                    else:
-                        if i == 10:
-                            break
-                        item = module_class(row[0])
-                        module.append(item)
+                            #print(row)
+                            #print(cell)
+                            if cell == None:
+                                i = i + 1
+                                continue
+                            else:
+                                modules.append(module_class(name = cell))
+                                module_names.append(cell)
+
+                        if i == 1:
+                            #print(cell)
+                            if cell == None:
+                                i = i + 1
+                                continue
+                            else:
+                                if dot_check(cell) == -1:
+                                    item = table_class(name= cell)
+
+                                    print("module name")
+                                    print(modules[-1].name)
+                                    (modules[-1].tables).append(table_class(name= cell))
+                                    print("table nameee")
+                                    print(modules[-1].tables[-1].name)
+
+                                else:
+
+                                    index = dot_check(cell)
+                                    print("++++++++++++++")
+                                    data = cell[:index]
+                                    if dot_check(cell[index + 1:]) == -1:
+                                        (modules[-1].tables[-1].inside_table).append(table_class(name=cell[index + 1:]))
+                                        print(modules[-1].tables[-1].inside_table[-1])
+                                        if (modules[-1].tables[-1].name == cell[:index]):
+                                            print("controll")
+                                        print((modules[-1].tables[-1].inside_table[-1].name))
+                                    else:
+                                        new_index = dot_check(cell[index + 1:])
+                                        data = dot_check(cell[new_index + 1:])
+                                        if dot_check(cell[index + 1:]) == -1:
+                                            (modules[-1].tables[-1].inside_table[-1].inside_table).append(
+                                                table_class(name=cell[new_index + 1:]))
+                                            print(modules[-1].tables[-1].inside_table[-1])
+                                            if ( modules[-1].tables[-1].inside_table[-1].name == cell[index + 1: new_index] ):
+                                                print("controll-------------------------------------------------------------")
+                                            print((modules[-1].tables[-1].inside_table[-1].name))
+                        if i == 2:
+                            f = 4
                     i = i + 1
 
 
+
+
+
+            v = 0
             for col in sheet.iter_cols(min_row=1, max_row=sheet.max_row, min_col=1, max_col=sheet.max_column,values_only=True):
                 for cell in col:
                     if cell:
                         if v == 0:
+                            modules.append(module_class(cell))
                             module_names.append(cell)
 
                         if v == 1:
@@ -102,14 +141,16 @@ def read_excel_file(file_path):
 
                 v = v + 1
 
-            excel_data[sheet_name] = sheet_data  # Store the sheet data in the dictionary
 
-        # Close the Excel file
+
+            excel_data[sheet_name] = sheet_data
+
+
         workbook.close()
-        print("*********")
-        print(module_names)
-        print("^^^^^^^^")
-        print(table_names)
+        #print("*********")
+        #print(module_names)
+        #print("^^^^^^^^")
+        #print(table_names)
 
         return excel_data
 

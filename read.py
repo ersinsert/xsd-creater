@@ -7,19 +7,21 @@ class ExcelRow:
         for column, value in kwargs.items():
             setattr(self, str(column), value)
 
+def dot_counter(input_string):
+    return input_string.count('.')
+
 class module_class:
     def __init__(self, name):
         self.name = name
         self.tables = []
 
 
-
 class parameter_class:
-    def __init__(self,parameter_name, display_name, parameter_type,
+    def __init__(self, display_name, parameter_type,
                  mandatory_range, gui_value, actual_value, enumeration_type, default_value,
                  initial_value, description, version, access_mode, parameter, service_affect,
                  rules, notlar):
-        self.parameter_name = parameter_name
+
         self.display_name = display_name
         self.parameter_type = parameter_type
         self.mandatory_range = mandatory_range
@@ -36,6 +38,8 @@ class parameter_class:
         self.rules = rules
         self.notlar = notlar
 
+def create_parameter_instance(parameter_values):
+    return parameter_class(*parameter_values)
 
 class table_class:
     def __init__(self, name):
@@ -59,8 +63,6 @@ def read_excel_file(file_path):
         workbook = openpyxl.load_workbook(file_path, data_only=True)
 
         excel_data = {}
-        print(workbook.sheetnames)
-        print(dot_check("st.ring."))
 
         for sheet_name in workbook.sheetnames:
             sheet = workbook[sheet_name]
@@ -96,7 +98,7 @@ def read_excel_file(file_path):
                                     print("table nameee")
                                     print(modules[-1].tables[-1].name)
 
-                                else:
+                                else: #deep 1
 
                                     index = dot_check(cell)
                                     print("++++++++++++++")
@@ -105,18 +107,30 @@ def read_excel_file(file_path):
                                         (modules[-1].tables[-1].inside_table).append(table_class(name=cell[index + 1:]))
                                         print(modules[-1].tables[-1].inside_table[-1])
                                         if (modules[-1].tables[-1].name == cell[:index]):
-                                            print("controll")
+                                            print("controll+++++++++++++++++++++++")
                                         print((modules[-1].tables[-1].inside_table[-1].name))
-                                    else:
+                                        print("&&&&&&&&&&&&")
+                                        print(row[3:])
+                                        item = create_parameter_instance(row[3:18])
+                                        (modules[-1].tables[-1].inside_table[-1].parameter).append(item)
+                                        print(modules[-1].tables[-1].inside_table[-1].parameter[-1].parameter_type)
+                                    else: #deep2
                                         new_index = dot_check(cell[index + 1:])
                                         data = dot_check(cell[new_index + 1:])
                                         if dot_check(cell[index + 1:]) == -1:
-                                            (modules[-1].tables[-1].inside_table[-1].inside_table).append(
-                                                table_class(name=cell[new_index + 1:]))
+                                            (modules[-1].tables[-1].inside_table[-1].inside_table).append(table_class(name=cell[new_index + 1:]))
                                             print(modules[-1].tables[-1].inside_table[-1])
                                             if ( modules[-1].tables[-1].inside_table[-1].name == cell[index + 1: new_index] ):
-                                                print("controll-------------------------------------------------------------")
+                                                print("controll----------")
                                             print((modules[-1].tables[-1].inside_table[-1].name))
+
+                                            print("&&&&&&&&&&&&----------")
+                                            print(row[3:])
+
+                                            (modules[-1].tables[-1].inside_table[-1].parameter).append(create_parameter_instance(row[3:18]))
+                                            print(modules[-1].tables[-1].inside_table[-1].parameter[-1].parameter_type)
+
+
                         if i == 2:
                             f = 4
                     i = i + 1
@@ -158,16 +172,6 @@ def read_excel_file(file_path):
         print(f"An error occurred: {e}")
         return None
 
-def print_excel_data(excel_data):
-    if excel_data is not None:
-        for sheet_name, sheet_data in excel_data.items():
-            print(f"Sheet: {sheet_name}")
-            for row in sheet_data:
-                # Access data using attribute names (e.g., row.modules)
-                print(vars(row))
-            print()
-    else:
-        print("No file selected.")
 
 def open_excel_file():
     root = tk.Tk()

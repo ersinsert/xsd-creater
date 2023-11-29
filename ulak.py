@@ -1,20 +1,29 @@
 import tkinter as tk
 from tkinter import filedialog
 import openpyxl
+import xml.etree.ElementTree as ET
+from xml.dom import minidom
 
 class ExcelRow:
     def __init__(self, **kwargs):
         for column, value in kwargs.items():
             setattr(self, str(column), value)
 
-class Parameter:
-    def __init__(self, module, table_name, parameter_name, display_name, parameter_type,
+def dot_counter(input_string):
+    return input_string.count('.')
+
+class module_class:
+    def __init__(self, name):
+        self.name = name
+        self.tables = []
+
+
+class parameter_class:
+    def __init__(self, display_name, parameter_type,
                  mandatory_range, gui_value, actual_value, enumeration_type, default_value,
                  initial_value, description, version, access_mode, parameter, service_affect,
                  rules, notlar):
-        self.module = module
-        self.table_name = table_name
-        self.parameter_name = parameter_name
+
         self.display_name = display_name
         self.parameter_type = parameter_type
         self.mandatory_range = mandatory_range
@@ -31,43 +40,221 @@ class Parameter:
         self.rules = rules
         self.notlar = notlar
 
+def create_parameter_instance(parameter_values):
+    return parameter_class(*parameter_values)
+
+class table_class:
+    def __init__(self, name):
+        self.name = name
+        self.inside_table = []
+        self.parameter = []
 
 
 
+def dot_check(my_string):
+    dot_index = my_string.find(".")
+    return dot_index
+
+module_names =[]
+modules = []
+table_names =[]
+tables = []
 def read_excel_file(file_path):
     try:
-        # Open the selected Excel file
+
         workbook = openpyxl.load_workbook(file_path, data_only=True)
 
-        excel_data = {}  # Dictionary to store sheets
+        excel_data = {}
 
         for sheet_name in workbook.sheetnames:
             sheet = workbook[sheet_name]
 
-            # Get the column names from the first row
-            columns = [cell.value for cell in sheet[1]]
+            sheet_data = []
+            for row in sheet.iter_rows(min_row=2, max_row=sheet.max_row, min_col=1, max_col=sheet.max_column, values_only=True):
+                i = 0
+                for cell in row:
+                    if i == 0 or i == 1 or i == 2:   #for module and table columns
+                        if i == 0:
 
-            # Create a list to store the data from the current sheet
-            sheet1 = []
+                            #print(row)
+                            #print(cell)
+                            if cell == None:
+                                i = i + 1
+                                continue
+                            else:
+                                modules.append(module_class(name = cell))
+                                module_names.append(cell)
 
-            for row_data in sheet.iter_rows(min_row=2, max_row=sheet.max_row, min_col=1, max_col=sheet.max_column, values_only=True):
-                # Create an ExcelRow instance for each row
-                print(row_data)
-                sheet1.append(row_data[0], row_data[1], row_data[2], row_data[3], row_data[4], row_data[5], row_data[6],
-                              row_data[7], row_data[8], row_data[9], row_data[10], row_data[11], row_data[12],
-                              row_data[13], row_data[14], row_data[15], row_data[16])
+                        if i == 1:
+                            #print(cell)
+                            if cell == None:
+                                i = i + 1
+                                continue
+                            else:
+                                if dot_check(cell) == -1:
+
+                                    (modules[-1].tables).append(table_class(name= cell))
+
+
+                                else: #deep 1
+
+                                    index = dot_check(cell)
+
+                                    if dot_check(cell[index + 1:]) == -1:
+                                        (modules[-1].tables[-1].inside_table).append(table_class(name=cell[index + 1:]))
+
+                                        if (modules[-1].tables[-1].name == cell[:index]):
+                                            print("controll+++++++++++++++++++++++")
+
+                                        item = create_parameter_instance(row[3:18])
+                                        (modules[-1].tables[-1].inside_table[-1].parameter).append(item)
+
+                                    else: #deep2
+                                        new_index = dot_check(cell[index + 1:])
+                                        data = dot_check(cell[new_index + 1:])
+                                        if dot_check(cell[index + 1:]) == -1:
+                                            (modules[-1].tables[-1].inside_table[-1].inside_table).append(table_class(name=cell[new_index + 1:]))
+
+                                            if ( modules[-1].tables[-1].inside_table[-1].name == cell[index + 1: new_index] ):
+                                                print("controll----------")
+
+
+                                            (modules[-1].tables[-1].inside_table[-1].parameter).append(create_parameter_instance(row[3:19]))
+
+                        if i == 2:
+                            f = 4
+                    i = i + 1
 
 
 
 
 
-        # Close the Excel file
+            v = 0
+            for col in sheet.iter_cols(min_row=1, max_row=sheet.max_row, min_col=1, max_col=sheet.max_column,values_only=True):
+                for cell in col:
+                    if cell:
+                        if v == 0:
+                            modules.append(module_class(cell))
+                            module_names.append(cell)
+
+                        if v == 1:
+                            table_names.append(cell)
+
+                    else:
+                        continue
+
+                v = v + 1
+
+
+
+            excel_data[sheet_name] = sheet_data
+
+
         workbook.close()
+        #print("*********")
+        #print(module_names)
+        #print("^^^^^^^^")
+        #print(table_names)
 
         return excel_data
+
     except Exception as e:
         print(f"An error occurred: {e}")
         return None
+
+
+
+
+
+
+
+def create_module(ET, modulename, added_element):
+    element = ET.Element("xs:element")
+    element.set("name", modulename)
+    element_comp = ET.Element("xs:complexType")
+    element_sequ = ET.Element("xs:sequence")
+    element_comp.append(element_sequ)
+    element.append(element_comp)
+    added_element.append(element)
+
+    return element_sequ
+
+
+
+def generateXSD(fileName):
+    try:
+
+
+        schemaElement = ET.Element("{http://www.w3.org/2001/XMLSchema}schema")
+        schemaElement.set("attributeFormDefault", "unqualified")
+        schemaElement.set("elementFormDefault", "qualified")
+
+        document = ET.ElementTree(schemaElement)
+        document.write(fileName, xml_declaration=True, encoding='utf-8')
+
+        rootElement = ET.SubElement(schemaElement, "xs:element")
+        rootElement.set("name", "root")
+        rootComplexType = ET.SubElement(rootElement, "xs:complexType")
+        rootSequence = ET.SubElement(rootComplexType, "xs:sequence")
+        ulakTemplateElement = ET.SubElement(rootSequence, "xs:element")
+        ulakTemplateElement.set("name", "ulak_template")
+        ulakTemplateComplexType = ET.SubElement(ulakTemplateElement, "xs:complexType")
+        ulakTemplateSequence = ET.SubElement(ulakTemplateComplexType, "xs:sequence")
+        dataModelElement = ET.SubElement(ulakTemplateSequence, "xs:element")
+        dataModelElement.set("name", "data_model")
+        dataModelElement.set("type", "xs:string")
+        neIdElement = ET.SubElement(ulakTemplateSequence, "xs:element")
+        neIdElement.set("name", "neId")
+        neIdElement.set("type", "xs:nonNegativeInteger")
+        neIdElement.set("default", "17")
+
+        tablesElement = ET.SubElement(ulakTemplateSequence, "xs:element")
+        tablesElement.set("name", "tables")
+
+        tablesComplexType = ET.SubElement(tablesElement, "xs:complexType")
+        tablesSequence = ET.SubElement(tablesComplexType, "xs:sequence")
+
+        # Create table element
+        tableElement = ET.SubElement(tablesSequence, "xs:element")
+        tableElement.set("name", "table")
+        tableElement.set("maxOccurs", "unbounded")
+        tableElement.set("minOccurs", "1")
+
+
+        tableComplexType = ET.SubElement(tableElement, "xs:complexType")
+        mainSequence = ET.SubElement(tableComplexType, "xs:sequence")
+
+        print(modules[-1].name)
+        for module in modules:
+            print(module.name)
+
+        item = create_module(document,"aseeekkeee", mainSequence)
+
+        document = ET.ElementTree(schemaElement)
+        document.write(fileName, xml_declaration=True, encoding='utf-8')
+
+        xml_content = minidom.parseString(ET.tostring(schemaElement)).toprettyxml(indent="    ")
+        with open(fileName, "w") as file:
+            file.write(xml_content)
+
+        print("XSD generated successfully and file name is2:", fileName)
+    except Exception as e:
+        print("Error:", str(e))
+
+# Example usage:
+generateXSD("xsddd_example.xsd")
+
+
+
+
+
+
+
+
+
+
+
+
 
 def open_excel_file():
     root = tk.Tk()
@@ -75,17 +262,8 @@ def open_excel_file():
 
     file_path = filedialog.askopenfilename(filetypes=[("Excel Files", "*.xlsx")])
 
-    if file_path:
-        excel_data = read_excel_file(file_path)
-        if excel_data is not None:
-            for sheet_name, sheet_data in excel_data.items():
-                print(f"Sheet: {sheet_name}")
-                for row in sheet_data:
-                    # Access data using attribute names (e.g., row.modules)
-                    print(vars(row))
-                print()
-    else:
-        print("No file selected.")
+    excel_data = read_excel_file(file_path)
+    # print_excel_data(excel_data)
 
 if __name__ == "__main__":
     open_excel_file()

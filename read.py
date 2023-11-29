@@ -88,55 +88,53 @@ def read_excel_file(file_path):
                             else:
                                 if dot_check(cell) == -1:       #deep 1
                                     double_deep = 0
-                                    (modules[-1].tables).append(table_class(name= cell))
+                                    #(modules[-1].tables).append(table_class(name= cell))
 
                                 else:                           #deep 2
                                     double_deep = 1
                                     index = dot_check(cell)
-                                    (modules[-1].tables[-1].inside_table).append(table_class(name=cell[index + 1:]))
+                                   # (modules[-1].tables[-1].inside_table).append(table_class(name=cell[index + 1:]))
 
 
-                                    if dot_check(cell[index + 1:]) == -1:
-                                        double_deep = 0
-                                        (modules[-1].tables[-1].inside_table).append(table_class(name=cell[index + 1:]))
-                                        if (modules[-1].tables[-1].name == cell[:index]):
-                                            print("control_point")
-                                            item = create_parameter_instance(row[3:18])
-                                            (modules[-1].tables[-1].inside_table[-1].parameter).append(item)
+                                 #   if dot_check(cell[index + 1:]) == -1:
+                                  #      double_deep = 0
+                                   #     (modules[-1].tables[-1].inside_table).append(table_class(name=cell[index + 1:]))
+                                    #    if (modules[-1].tables[-1].name == cell[:index]):
+                                     #       print("control_point")
+                                      #      item = create_parameter_instance(row[3:18])
+                                      #   (modules[-1].tables[-1].inside_table[-1].parameter).append(item)
 
-                                    else: #deep2
-                                        double_deep = 1
-                                        new_index = dot_check(cell[index + 1:])
-                                        if dot_check(cell[index + 1:]) == -1:
-                                            (modules[-1].tables[-1].inside_table[-1].inside_table).append(table_class(name=cell[new_index + 1:]))
-                                            if ( modules[-1].tables[-1].inside_table[-1].name == cell[index + 1: new_index] ):
-                                                (modules[-1].tables[-1].inside_table[-1].parameter).append(create_parameter_instance(row[3:18]))
+                                    #else: #deep2
+                                     #   double_deep = 1
+                                      #  new_index = dot_check(cell[index + 1:])
+                                       # if dot_check(cell[index + 1:]) == -1:
+                                       #     (modules[-1].tables[-1].inside_table[-1].inside_table).append(table_class(name=cell[new_index + 1:]))
+                                        #    if ( modules[-1].tables[-1].inside_table[-1].name == cell[index + 1: new_index] ):
+                                         #       (modules[-1].tables[-1].inside_table[-1].parameter).append(create_parameter_instance(row[3:18]))
 
                         if i == 2:
-                            depht = dot_counter(cell)
-                            index = dot_check(cell)
-                            for d in range(depht + 1):
-                                if double_deep == 1:
-                                    if d == depht:
-                                        (modules[-1].tables[-1].inside_table[-1].inside_table[-1].parameter).append(create_parameter_instance(row[3:18]))
-                                    else:
-                                        (modules[-1].tables[-1].inside_table[-1].inside_table).append(table_class(name=cell[:index]))
-
-
-
-                                else:
-                                    if d == depht:
-                                        (modules[-1].tables[-1].inside_table[-1].parameter).append(
-                                            create_parameter_instance(row[3:18]))
-                                    else:
-                                        (modules[-1].tables[-1].inside_table).append(table_class(name=cell[:index]))
-
+                            if (cell != None):
+                                depht = dot_counter(cell)
                                 index = dot_check(cell)
-                                cell = cell[index+1:]
-                                if d == depht:
-                                    (modules[-1].tables[-1].inside_table[-1].parameter).append(create_parameter_instance(row[3:18]))
+                            for d in range(5 + 1):
+                                if double_deep == 1:
+                                    if d == 5:
+                                        f= 4
+                                        #(modules[-1].tables[-1].inside_table[-1].inside_table[-1].parameter).append(create_parameter_instance(row[3:18]))
+                                    else:
+                                        f=3
+                                       # (modules[-1].tables[-1].inside_table[-1].inside_table).append(table_class(name=cell[:index]))
+
+
+
                                 else:
-                                    (modules[-1].tables[-1].inside_table).append(table_class(name=cell[:index]))
+                                    if d == 5:
+                                        g=0
+                                        #(modules[-1].tables[-1].inside_table[-1].parameter).append(create_parameter_instance(row[3:18]))
+                                    else:
+                                        f=4
+                                        #(modules[-1].tables[-1].inside_table).append(table_class(name=cell[:index]))
+
 
 
                         if i == 2:
@@ -184,81 +182,6 @@ def read_excel_file(file_path):
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 
-def create_module(document, modulename, added_element):
-    element = ET.Element("xs:element")
-    element.set("name", modulename)
-    element_comp = ET.Element("xs:complexType")
-    element_sequ = ET.Element("xs:sequence")
-    element_comp.append(element_sequ)
-    element.append(element_comp)
-    added_element.append(element)
-
-    return element_sequ
-
-
-
-def generateXSD(fileName):
-    try:
-
-
-        schemaElement = ET.Element("{http://www.w3.org/2001/XMLSchema}schema")
-        schemaElement.set("attributeFormDefault", "unqualified")
-        schemaElement.set("elementFormDefault", "qualified")
-
-        document = ET.ElementTree(schemaElement)
-        document.write(fileName, xml_declaration=True, encoding='utf-8')
-
-        rootElement = ET.SubElement(schemaElement, "xs:element")
-        rootElement.set("name", "root")
-        rootComplexType = ET.SubElement(rootElement, "xs:complexType")
-        rootSequence = ET.SubElement(rootComplexType, "xs:sequence")
-        ulakTemplateElement = ET.SubElement(rootSequence, "xs:element")
-        ulakTemplateElement.set("name", "ulak_template")
-        ulakTemplateComplexType = ET.SubElement(ulakTemplateElement, "xs:complexType")
-        ulakTemplateSequence = ET.SubElement(ulakTemplateComplexType, "xs:sequence")
-        dataModelElement = ET.SubElement(ulakTemplateSequence, "xs:element")
-        dataModelElement.set("name", "data_model")
-        dataModelElement.set("type", "xs:string")
-        neIdElement = ET.SubElement(ulakTemplateSequence, "xs:element")
-        neIdElement.set("name", "neId")
-        neIdElement.set("type", "xs:nonNegativeInteger")
-        neIdElement.set("default", "17")
-
-        tablesElement = ET.SubElement(ulakTemplateSequence, "xs:element")
-        tablesElement.set("name", "tables")
-
-        tablesComplexType = ET.SubElement(tablesElement, "xs:complexType")
-        tablesSequence = ET.SubElement(tablesComplexType, "xs:sequence")
-
-        # Create table element
-        tableElement = ET.SubElement(tablesSequence, "xs:element")
-        tableElement.set("name", "table")
-        tableElement.set("maxOccurs", "unbounded")
-        tableElement.set("minOccurs", "1")
-
-
-        tableComplexType = ET.SubElement(tableElement, "xs:complexType")
-        mainSequence = ET.SubElement(tableComplexType, "xs:sequence")
-
-        print(modules[-1].name)
-        for module in modules:
-            print(module.name)
-
-        item = create_module(document,"aseeekkeee", mainSequence)
-
-        document = ET.ElementTree(schemaElement)
-        document.write(fileName, xml_declaration=True, encoding='utf-8')
-
-        xml_content = minidom.parseString(ET.tostring(schemaElement)).toprettyxml(indent="    ")
-        with open(fileName, "w") as file:
-            file.write(xml_content)
-
-        print("XSD generated successfully and file name is2:", fileName)
-    except Exception as e:
-        print("Error:", str(e))
-
-
-
 
 
 
@@ -275,7 +198,7 @@ def open_excel_file():
     file_path = filedialog.askopenfilename(filetypes=[("Excel Files", "*.xlsx")])
 
     excel_data = read_excel_file(file_path)
-    generateXSD("xsddd_example.xsd")
+    #generateXSD("xsddd_example.xsd")
 
     # print_excel_data(excel_data)
 

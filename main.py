@@ -51,10 +51,12 @@ def create_table(tablename, minEntries, maxEntries, disname, ref, desc, accesMod
     appinfo_null = ET.Element("nullValue")
     appinfo_access = ET.Element("accessMode")
 
-    
+    element_info.append(element_name)
+    element_info.append(appinfo_desc)
+    element_info.append(appinfo_null)
+    element_info.append(appinfo_access)
 
-    appinfo_text.text = disname
-    element_name.append(appinfo_text)
+
 
     element_tableref = ET.Element("tableRef")
 
@@ -167,7 +169,7 @@ def generateXSD(fileName):
             print(module.name)
 
         item = create_module("MODULE_NAME", dataTypeSequence)
-        bitem = create_table("name", 2,3,"disname","ref")
+        bitem = create_table("TABLE NAME", "234","3","disname","ref","desc","mode",item)
 
         document = ET.ElementTree(schemaElement)
         document.write(fileName, xml_declaration=True, encoding='utf-8')

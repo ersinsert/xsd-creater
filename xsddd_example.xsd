@@ -17,7 +17,7 @@
                                                     <xs:element name="ConfigDataType">
                                                         <xs:complexType>
                                                             <xs:sequence>
-                                                                <xs:complexType name="aseeekkeee">
+                                                                <xs:complexType name="MODULE_NAME">
                                                                     <annotation>
                                                                         <appinfo>
                                                                             <name/>
@@ -30,7 +30,216 @@
                                                                             <accessMode/>
                                                                         </appinfo>
                                                                     </annotation>
-                                                                    <xs:sequence/>
+                                                                    <xs:sequence>
+                                                                        <xs:element name="name">
+                                                                            <xs:complexType>
+                                                                                <annotation>
+                                                                                    <appinfo>
+                                                                                        <name/>
+                                                                                        <description/>
+                                                                                        <nullValue/>
+                                                                                        <accessMode/>
+                                                                                        <name/>
+                                                                                        <tableRef>
+                                                                                            <ref id="1">
+                                                                                                <text>ref</text>
+                                                                                            </ref>
+                                                                                        </tableRef>
+                                                                                        <maxEntries>
+                                                                                            <text>3</text>
+                                                                                        </maxEntries>
+                                                                                        <minEntries>
+                                                                                            <text>2</text>
+                                                                                        </minEntries>
+                                                                                        <description>
+                                                                                            <text>desc</text>
+                                                                                        </description>
+                                                                                        <accessMode>
+                                                                                            <text>mode</text>
+                                                                                        </accessMode>
+                                                                                    </appinfo>
+                                                                                    <appinfo>
+                                                                                        <name/>
+                                                                                        <description/>
+                                                                                        <nullValue/>
+                                                                                        <accessMode/>
+                                                                                        <name/>
+                                                                                        <tableRef>
+                                                                                            <ref id="1">
+                                                                                                <text>ref</text>
+                                                                                            </ref>
+                                                                                        </tableRef>
+                                                                                        <maxEntries>
+                                                                                            <text>3</text>
+                                                                                        </maxEntries>
+                                                                                        <minEntries>
+                                                                                            <text>2</text>
+                                                                                        </minEntries>
+                                                                                        <description>
+                                                                                            <text>desc</text>
+                                                                                        </description>
+                                                                                        <accessMode>
+                                                                                            <text>mode</text>
+                                                                                        </accessMode>
+                                                                                    </appinfo>
+                                                                                </annotation>
+                                                                                <annotation>
+                                                                                    <appinfo>
+                                                                                        <name/>
+                                                                                        <description/>
+                                                                                        <nullValue/>
+                                                                                        <accessMode/>
+                                                                                        <name/>
+                                                                                        <tableRef>
+                                                                                            <ref id="1">
+                                                                                                <text>ref</text>
+                                                                                            </ref>
+                                                                                        </tableRef>
+                                                                                        <maxEntries>
+                                                                                            <text>3</text>
+                                                                                        </maxEntries>
+                                                                                        <minEntries>
+                                                                                            <text>2</text>
+                                                                                        </minEntries>
+                                                                                        <description>
+                                                                                            <text>desc</text>
+                                                                                        </description>
+                                                                                        <accessMode>
+                                                                                            <text>mode</text>
+                                                                                        </accessMode>
+                                                                                    </appinfo>
+                                                                                    <appinfo>
+                                                                                        <name/>
+                                                                                        <description/>
+                                                                                        <nullValue/>
+                                                                                        <accessMode/>
+                                                                                        <name/>
+                                                                                        <tableRef>
+                                                                                            <ref id="1">
+                                                                                                <text>ref</text>
+                                                                                            </ref>
+                                                                                        </tableRef>
+                                                                                        <maxEntries>
+                                                                                            <text>3</text>
+                                                                                        </maxEntries>
+                                                                                        <minEntries>
+                                                                                            <text>2</text>
+                                                                                        </minEntries>
+                                                                                        <description>
+                                                                                            <text>desc</text>
+                                                                                        </description>
+                                                                                        <accessMode>
+                                                                                            <text>mode</text>
+                                                                                        </accessMode>
+                                                                                    </appinfo>
+                                                                                </annotation>
+                                                                                <xs:sequence/>
+                                                                            </xs:complexType>
+                                                                            <xs:complexType>
+                                                                                <annotation>
+                                                                                    <appinfo>
+                                                                                        <name/>
+                                                                                        <description/>
+                                                                                        <nullValue/>
+                                                                                        <accessMode/>
+                                                                                        <name/>
+                                                                                        <tableRef>
+                                                                                            <ref id="1">
+                                                                                                <text>ref</text>
+                                                                                            </ref>
+                                                                                        </tableRef>
+                                                                                        <maxEntries>
+                                                                                            <text>3</text>
+                                                                                        </maxEntries>
+                                                                                        <minEntries>
+                                                                                            <text>2</text>
+                                                                                        </minEntries>
+                                                                                        <description>
+                                                                                            <text>desc</text>
+                                                                                        </description>
+                                                                                        <accessMode>
+                                                                                            <text>mode</text>
+                                                                                        </accessMode>
+                                                                                    </appinfo>
+                                                                                    <appinfo>
+                                                                                        <name/>
+                                                                                        <description/>
+                                                                                        <nullValue/>
+                                                                                        <accessMode/>
+                                                                                        <name/>
+                                                                                        <tableRef>
+                                                                                            <ref id="1">
+                                                                                                <text>ref</text>
+                                                                                            </ref>
+                                                                                        </tableRef>
+                                                                                        <maxEntries>
+                                                                                            <text>3</text>
+                                                                                        </maxEntries>
+                                                                                        <minEntries>
+                                                                                            <text>2</text>
+                                                                                        </minEntries>
+                                                                                        <description>
+                                                                                            <text>desc</text>
+                                                                                        </description>
+                                                                                        <accessMode>
+                                                                                            <text>mode</text>
+                                                                                        </accessMode>
+                                                                                    </appinfo>
+                                                                                </annotation>
+                                                                                <annotation>
+                                                                                    <appinfo>
+                                                                                        <name/>
+                                                                                        <description/>
+                                                                                        <nullValue/>
+                                                                                        <accessMode/>
+                                                                                        <name/>
+                                                                                        <tableRef>
+                                                                                            <ref id="1">
+                                                                                                <text>ref</text>
+                                                                                            </ref>
+                                                                                        </tableRef>
+                                                                                        <maxEntries>
+                                                                                            <text>3</text>
+                                                                                        </maxEntries>
+                                                                                        <minEntries>
+                                                                                            <text>2</text>
+                                                                                        </minEntries>
+                                                                                        <description>
+                                                                                            <text>desc</text>
+                                                                                        </description>
+                                                                                        <accessMode>
+                                                                                            <text>mode</text>
+                                                                                        </accessMode>
+                                                                                    </appinfo>
+                                                                                    <appinfo>
+                                                                                        <name/>
+                                                                                        <description/>
+                                                                                        <nullValue/>
+                                                                                        <accessMode/>
+                                                                                        <name/>
+                                                                                        <tableRef>
+                                                                                            <ref id="1">
+                                                                                                <text>ref</text>
+                                                                                            </ref>
+                                                                                        </tableRef>
+                                                                                        <maxEntries>
+                                                                                            <text>3</text>
+                                                                                        </maxEntries>
+                                                                                        <minEntries>
+                                                                                            <text>2</text>
+                                                                                        </minEntries>
+                                                                                        <description>
+                                                                                            <text>desc</text>
+                                                                                        </description>
+                                                                                        <accessMode>
+                                                                                            <text>mode</text>
+                                                                                        </accessMode>
+                                                                                    </appinfo>
+                                                                                </annotation>
+                                                                                <xs:sequence/>
+                                                                            </xs:complexType>
+                                                                        </xs:element>
+                                                                    </xs:sequence>
                                                                 </xs:complexType>
                                                             </xs:sequence>
                                                         </xs:complexType>

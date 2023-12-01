@@ -1,9 +1,9 @@
 
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
-from read import modules
+from excel_reader import modules
 
-def create_module(modulename, added_element):
+def create_xsd_module(modulename, added_element):
     element = ET.Element("xs:complexType")
     element_sequ = ET.Element("xs:sequence")
 
@@ -35,29 +35,15 @@ def create_module(modulename, added_element):
 
     return element_sequ
 
-def create_table(tablename, minEntries, maxEntries, disname, ref, desc, accesMode, added_element):
+def create_xsd_table(tablename, minEntries, maxEntries, disname, ref, desc, accesMode, added_element):
     element = ET.Element("xs:element")
     element.set("name", tablename)
 
     element_comp = ET.Element("xs:complexType")
     element.append(element_comp)
     element_anno = ET.Element("annotation")
-    element_comp.append(element_anno)
     element_info = ET.Element("appinfo")
-    element_anno.append(element_info)
-
     element_name = ET.Element("name")
-    appinfo_desc = ET.Element("description")
-    appinfo_null = ET.Element("nullValue")
-    appinfo_access = ET.Element("accessMode")
-
-    element_info.append(element_name)
-    element_info.append(appinfo_desc)
-    element_info.append(appinfo_null)
-    element_info.append(appinfo_access)
-
-
-
     element_tableref = ET.Element("tableRef")
 
     element_ref = ET.Element("ref")
@@ -68,28 +54,11 @@ def create_table(tablename, minEntries, maxEntries, disname, ref, desc, accesMod
     element_tableref.append(element_ref)
 
     element_max = ET.Element("maxEntries")
-    if maxEntries is not None and len(maxEntries) > 2:
-        maxEntries = maxEntries[:-2]
-    appinfo_text3 = ET.Element("text")
-    appinfo_text3.text = maxEntries
-    element_max.append(appinfo_text3)
-
     element_min = ET.Element("minEntries")
-    if minEntries is not None and len(minEntries) > 2:
-        minEntries = minEntries[:-2]
-    appinfo_text4 = ET.Element("text")
-    appinfo_text4.text = minEntries
-    element_min.append(appinfo_text4)
 
     element_desc = ET.Element("description")
-    appinfo_text5 = ET.Element("text")
-    appinfo_text5.text = desc
-    element_desc.append(appinfo_text5)
-
     element_acces = ET.Element("accessMode")
-    appinfo_text6 = ET.Element("text")
-    appinfo_text6.text = accesMode
-    element_acces.append(appinfo_text6)
+
 
     element_info.append(element_name)
     element_info.append(element_tableref)
@@ -104,13 +73,55 @@ def create_table(tablename, minEntries, maxEntries, disname, ref, desc, accesMod
 
     element_comp.append(element_anno)
     element_comp.append(element_sequ)
-
-    element.append(element_comp)
     added_element.append(element)
 
     return element_sequ
 
+def create_xsd_parameter(rowname, enumname, minoccur, defaul, disname, desc, nullvalue, accesMode, added_element):
+    element = ET.Element("xs:element")
+    element.set("name", rowname)
+    element.set("type", f"{enumname}Enum")
 
+    if minoccur == "TRUE":
+        element.set("minOccurs", "1")
+    else:
+        element.set("minOccurs", "0")
+
+    if defaul != "-":
+        if defaul is not None and len(defaul) > 2:
+            defaul = defaul[:-2]
+        element.set("default", defaul)
+
+    element_simple = ET.Element("xs:simpletype")
+
+    element_anno = ET.Element("annotation")
+    element_info = ET.Element("appinfo")
+
+    element_name = ET.Element("name")
+    element_name.text = disname
+    element_desc = ET.Element("description")
+    element_desc.text = desc
+
+    element_null = ET.Element("nullvalue")
+    if nullvalue is not None and len(nullvalue) > 2:
+        nullvalue = nullvalue[:-2]
+    element_null.text = nullvalue
+
+    element_acces = ET.Element("accessMode")
+    element_acces.text = accesMode
+
+    element_info.append(element_name)
+    element_info.append(element_desc)
+    element_info.append(element_null)
+    element_info.append(element_acces)
+
+    element_anno.append(element_info)
+    element_simple.append(element_anno)
+
+    element.append(element_simple)
+    added_element.append(element)
+
+    return element
 
 
 def generateXSD(fileName):
@@ -168,8 +179,15 @@ def generateXSD(fileName):
         for module in modules:
             print(module.name)
 
-        item = create_module("MODULE_NAME", dataTypeSequence)
-        bitem = create_table("TABLE NAME", "234","3","disname","ref","desc","mode",item)
+            for table in module.tables:
+
+                for parameter in table:
+
+
+
+        item = create_xsd_module("MODULE_NAME", dataTypeSequence)
+        bitem = create_xsd_table("TABLE NAME", "234","3","disname","ref","desc","mode",item)
+        citem = create_xsd_parameter("rowname", "enumname", "min", "max", "disname", "desc","nullvalue","accesMode", bitem )
 
         document = ET.ElementTree(schemaElement)
         document.write(fileName, xml_declaration=True, encoding='utf-8')
